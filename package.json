@@ -1,0 +1,9 @@
+{
+   "scripts": {
+    "test:api": "newman run \"collections/ServeRest.postman_collection.json\" -e \"environments/ServeRestEnvironment.postman_environment.json\" -r cli,htmlextra --reporter-htmlextra-export \"reports/report.html\""
+  },
+  "devDependencies": {
+    "newman": "^6.2.3",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}
