@@ -1,0 +1,203 @@
+{
+  "info": {
+    "_postman_id": "bb1f23b9-6ee8-425e-b1fb-7225e062ea0a",
+    "name": "ServeRest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15406096"
+  },
+  "item": [
+    {
+      "name": "/login",
+      "item": [
+        {
+          "name": "Setup",
+          "item": [
+            {
+              "name": "Create User",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\n    pm.response.to.have.status(201);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message and _id not null\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Cadastro realizado com sucesso\")\n    pm.expect(jsonData._id).to.not.be.null;\n    pm.expect(jsonData._id).to.not.be.undefined;\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"createUserSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\nconst requestBody = JSON.parse(pm.request.body.raw);\npm.environment.set(\"userEmail\", requestBody.email);\npm.environment.set(\"userPassword\", requestBody.password);\n\n\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/usuarios",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "usuarios"
+                  ]
+                },
+                "description": "Creates a new admin user with random credentials. Saves the generated email and password to environment variables for use in subsequent login requests."
+              },
+              "response": []
+            }
+          ],
+          "description": "Pre-test setup for the login flow. Creates a user with random credentials and saves the email and password to environment variables for use in subsequent login requests."
+        },
+        {
+          "name": "Login With Valid Credential",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message and authorization not null\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Login realizado com sucesso\")\n    pm.expect(jsonData.authorization).to.not.be.null;\n    pm.expect(jsonData.authorization).to.not.be.undefined;\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"loginSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\nconst jsonData = pm.response.json();\npm.environment.set(\"authorization\", jsonData.authorization);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{userEmail}}\",\r\n  \"password\": \"{{userPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Attempts to log in using valid credentials previously stored in environment variables. Expects a 200 response and saves the authorization token to the environment."
+          },
+          "response": []
+        },
+        {
+          "name": "Login With Invalid Credential",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Email e/ou senha inválidos\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"loginInvalidSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Attempts to log in using random invalid credentials. Expects a 401 Unauthorized response with an appropriate error message."
+          },
+          "response": []
+        },
+        {
+          "name": "Login With Empty Credential",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.email).to.be.equal(\"email não pode ficar em branco\")\r\n    pm.expect(jsonData.password).to.be.equal(\"password não pode ficar em branco\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"loginEmptySchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"\",\r\n  \"password\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Attempts to log in with empty email and password fields. Expects a 400 Bad Request response with field-level validation error messages."
+          },
+          "response": []
+        }
+      ],
+      "description": "Contains all test scenarios for the login endpoint (`/login`). Covers successful authentication, invalid credentials, and empty field validation.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Validate that the required environment variable is set before running any request\r\nconst baseUrl = pm.environment.get(\"url\");\r\n\r\nif (!baseUrl) {\r\n    throw new Error(\"Environment variable 'url' is not defined. Please set it in the active environment before running this collection.\");\r\n}\r\n\r\n// Defines the schemas and saves them as collection variables:\r\n// User Created\r\nconst createUserSchema = {\r\n    type: \"object\",\r\n    required: [\"message\", \"_id\"],\r\n    properties: {\r\n        message:  { type: \"string\" },\r\n        _id:   { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"createUserSchema\", JSON.stringify(createUserSchema));\r\n\r\n// Login With Valid Credential\r\nconst loginSchema = {\r\n    type: \"object\",\r\n    required: [\"message\", \"authorization\"],\r\n    properties: {\r\n        message:  { type: \"string\" },\r\n        _id:   { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"loginSchema\", JSON.stringify(loginSchema));\r\n\r\n// Login With Invalid Credential\r\nconst loginInvalidSchema = {\r\n    type: \"object\",\r\n    required: [\"message\"],\r\n    properties: {\r\n        message:  { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"loginInvalidSchema\", JSON.stringify(loginInvalidSchema));\r\n\r\n// Login With Empty Credential\r\nconst loginEmptySchema = {\r\n    type: \"object\",\r\n    required: [\"email\", \"password\"],\r\n    properties: {\r\n        email:  { type: \"string\" },\r\n        password: { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"loginEmptySchema\", JSON.stringify(loginEmptySchema));"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "createUserSchema",
+      "value": ""
+    },
+    {
+      "key": "loginSchema",
+      "value": ""
+    },
+    {
+      "key": "loginInvalidSchema",
+      "value": ""
+    },
+    {
+      "key": "loginEmptySchema",
+      "value": ""
+    }
+  ]
+}
