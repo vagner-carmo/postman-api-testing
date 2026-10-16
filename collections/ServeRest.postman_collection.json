@@ -720,6 +720,972 @@
           }
         }
       ]
+    },
+    {
+      "name": "/products",
+      "item": [
+        {
+          "name": "Setup",
+          "item": [
+            {
+              "name": "Create User Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\n    pm.response.to.have.status(201);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message and _id not null\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Cadastro realizado com sucesso\")\n    pm.expect(jsonData._id).to.not.be.null;\n    pm.expect(jsonData._id).to.not.be.undefined;\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"createUserSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\nconst requestBody = JSON.parse(pm.request.body.raw);\npm.environment.set(\"userEmail\", requestBody.email);\npm.environment.set(\"userPassword\", requestBody.password);\n\n\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/usuarios",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "usuarios"
+                  ]
+                },
+                "description": "Creates a new admin user with random credentials. Saves the generated email and password to environment variables for use in subsequent login requests."
+              },
+              "response": []
+            },
+            {
+              "name": "Login User Admin",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message and authorization not null\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Login realizado com sucesso\")\n    pm.expect(jsonData.authorization).to.not.be.null;\n    pm.expect(jsonData.authorization).to.not.be.undefined;\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"loginSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\nconst jsonData = pm.response.json();\npm.environment.set(\"authorization\", jsonData.authorization);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"email\": \"{{userEmail}}\",\r\n  \"password\": \"{{userPassword}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/login",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                },
+                "description": "Attempts to log in using valid credentials previously stored in environment variables. Expects a 200 response and saves the authorization token to the environment."
+              },
+              "response": []
+            },
+            {
+              "name": "Create Product",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message and _id not null\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Cadastro realizado com sucesso\")\r\n    pm.expect(jsonData._id).to.not.be.null;\r\n    pm.expect(jsonData._id).to.not.be.undefined;\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"createProductSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n\r\nconst requestBody = JSON.parse(pm.request.body.raw);\r\npm.environment.set(\"productName2\", requestBody.nome);\r\n\r\nconst jsonData = pm.response.json();\r\npm.environment.set(\"productId2\", jsonData._id);\r\n"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "auth": {
+                  "type": "apikey",
+                  "apikey": [
+                    {
+                      "key": "value",
+                      "value": "{{authorization}}",
+                      "type": "string"
+                    },
+                    {
+                      "key": "key",
+                      "value": "Authorization",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/produtos",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "produtos"
+                  ]
+                },
+                "description": "Creates a new product with random data as part of the test setup. Saves the generated product name and ID to environment variables for use in subsequent requests."
+              },
+              "response": []
+            }
+          ],
+          "description": "Pre-test setup for the products flow. Creates an admin user, logs in to obtain an authorization token, and creates an initial product. Saves all generated data to environment variables for use in subsequent requests."
+        },
+        {
+          "name": "Create Product Successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message and _id not null\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Cadastro realizado com sucesso\")\r\n    pm.expect(jsonData._id).to.not.be.null;\r\n    pm.expect(jsonData._id).to.not.be.undefined;\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"createProductSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n\r\nconst requestBody = JSON.parse(pm.request.body.raw);\r\npm.environment.set(\"productName\", requestBody.nome);\r\npm.environment.set(\"productPrice\", requestBody.preco);\r\npm.environment.set(\"productDescription\", requestBody.descricao);\r\npm.environment.set(\"productQuantity\", requestBody.quantidade);\r\n\r\nconst jsonData = pm.response.json();\r\npm.environment.set(\"productId\", jsonData._id);\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Sends a POST request to create a new product with random data. Expects a 201 status code and a success message. Saves the created product's name, price, description, quantity, and ID to environment variables for use in subsequent requests."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product With Existing Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Já existe produto com esse nome\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{productName}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Attempts to create a new product using a name that is already registered. Expects a 400 status code and an error message indicating the product name is already in use."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product With Empty Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.nome).to.be.equal(\"nome não pode ficar em branco\")\r\n    pm.expect(jsonData.preco).to.be.equal(\"preco deve ser um número\")\r\n    pm.expect(jsonData.descricao).to.be.equal(\"descricao não pode ficar em branco\")\r\n    pm.expect(jsonData.quantidade).to.be.equal(\"quantidade deve ser um número\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"productEmptyFieldsSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"\",\r\n  \"preco\": \"\",\r\n  \"descricao\": \"\",\r\n  \"quantidade\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Attempts to create a new product with all fields left empty. Expects a 400 status code and validation error messages for each required field (name, price, description, and quantity)."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product With Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Attempts to create a new product using an empty or invalid authorization token. Expects a 401 Unauthorized response with an appropriate error message."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response has 'quantidade' and 'produtos' fields\", function () {\r\n    var jsonData = pm.response.json();\r\n    pm.expect(jsonData).to.have.property('quantidade');\r\n    pm.expect(jsonData.quantidade).to.be.a('number');\r\n    pm.expect(jsonData).to.have.property('produtos');\r\n    pm.expect(jsonData.produtos).to.be.an('array');\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"productsListSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos"
+              ]
+            },
+            "description": "Retrieves the full list of registered products. Expects a 200 status code and a response body containing a 'quantidade' (count) field and a 'produtos' array with all product records."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product By Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response fields match environment variables\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.nome).to.eql(pm.environment.get(\"productName\"));\r\n    pm.expect(response.preco).to.eql(pm.environment.get(\"productPrice\"));\r\n    pm.expect(response.descricao).to.eql(pm.environment.get(\"productDescription\"));\r\n    pm.expect(response.quantidade).to.eql(pm.environment.get(\"productQuantity\"));\r\n    pm.expect(response._id).to.eql(pm.environment.get(\"productId\"));\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"productByIdListSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Retrieves a specific product by its ID stored in the 'productId' environment variable. Expects a 200 status code and validates that the returned product data matches the values stored in the environment variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product With Nonexistent Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Produto não encontrado\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = Array.from({ length: 16 }, () =>\r\n    \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"[\r\n        Math.floor(Math.random() * 62)\r\n    ]\r\n).join(\"\");\r\n\r\npm.environment.set(\"randomId\", id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{randomId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{randomId}}"
+              ]
+            },
+            "description": "Attempts to retrieve a product using a randomly generated, nonexistent ID. Expects a 400 status code and an error message indicating the product was not found."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product Successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Registro alterado com sucesso\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n\r\nconst requestBody = JSON.parse(pm.request.body.raw);\r\npm.environment.set(\"productNameUpdated\", requestBody.nome);\r\npm.environment.set(\"productPriceUpdated\", requestBody.preco);\r\npm.environment.set(\"productDescriptionUpdated\", requestBody.descricao);\r\npm.environment.set(\"productQuantityUpdated\", requestBody.quantidade);\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Sends a PUT request to update the product identified by 'productId' with new random data. Expects a 200 status code and a success message. Saves the updated product data to environment variables for subsequent validation."
+          },
+          "response": []
+        },
+        {
+          "name": "Validating Updated Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response fields match environment variables\", function () {\n    const response = pm.response.json();\n\n    pm.expect(response.nome).to.eql(pm.environment.get(\"productNameUpdated\"));\n    pm.expect(response.preco).to.eql(pm.environment.get(\"productPriceUpdated\"));\n    pm.expect(response.descricao).to.eql(pm.environment.get(\"productDescriptionUpdated\"));\n    pm.expect(response.quantidade).to.eql(pm.environment.get(\"productQuantityUpdated\"));\n    pm.expect(response._id).to.eql(pm.environment.get(\"productId\"));\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"productByIdListSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Retrieves the previously updated product by ID and validates that all fields (name, price, description, quantity, and ID) match the updated values stored in the environment variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product With Existing Name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Já existe produto com esse nome\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{productName2}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Attempts to update a product's name to one that is already registered by another product. Expects a 400 status code and an error message indicating the product name is already in use."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product With Empty Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 405\", function () {\r\n    pm.response.to.have.status(405);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Não é possível realizar PUT em /produtos/. Acesse https://serverest.dev para ver as rotas disponíveis e como utilizá-las.\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{productName2}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos/",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                ""
+              ]
+            },
+            "description": "Attempts to send a PUT request to the /produtos/ endpoint without providing a product ID. Expects a 405 status code and an error message indicating that PUT is not allowed on this route."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product With Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Response has Content-Type application/json\", function () {\r\n    pm.response.to.have.header(\"Content-Type\");\r\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body has correct message\", function () {\r\n    const jsonData = pm.response.json();\r\n    pm.expect(jsonData.message).to.be.equal(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\")\r\n});\r\n\r\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\r\n\r\npm.test(\"Schema is valid\", () => {\r\n    pm.response.to.have.jsonSchema(schema);\r\n});\r\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"{{productName2}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Attempts to update a product using an empty or invalid authorization token. Expects a 401 Unauthorized response with an appropriate error message."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product Successfully",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Registro excluído com sucesso\")\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\n\n\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Sends a DELETE request to remove the product identified by 'productId'. Expects a 200 status code and a success message confirming the record was deleted."
+          },
+          "response": []
+        },
+        {
+          "name": "Validating that product has been deleted",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Produto não encontrado\")\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Attempts to retrieve the previously deleted product by ID. Expects a 400 status code and an error message indicating the product was not found, confirming the deletion was successful."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product With Nonexistent Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Nenhum registro excluído\")\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\n\n\n"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = Array.from({ length: 16 }, () =>\r\n    \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"[\r\n        Math.floor(Math.random() * 62)\r\n    ]\r\n).join(\"\");\r\n\r\npm.environment.set(\"randomId\", id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{randomId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{randomId}}"
+              ]
+            },
+            "description": "Attempts to delete a product using a randomly generated, nonexistent ID. Expects a 200 status code and a message indicating that no record was deleted."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product With Empty Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 405\", function () {\n    pm.response.to.have.status(405);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Não é possível realizar DELETE em /produtos/. Acesse https://serverest.dev para ver as rotas disponíveis e como utilizá-las.\")\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\n\n\n"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{authorization}}",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                ""
+              ]
+            },
+            "description": "Attempts to send a DELETE request to the /produtos/ endpoint without providing a product ID. Expects a 405 status code and an error message indicating that DELETE is not allowed on this route."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product With Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\n    pm.response.to.have.status(401);\n});\n\npm.test(\"Response has Content-Type application/json\", function () {\n    pm.response.to.have.header(\"Content-Type\");\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body has correct message\", function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData.message).to.be.equal(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\")\n});\n\nconst schema = JSON.parse(pm.collectionVariables.get(\"onlyMessageSchema\"));\n\npm.test(\"Schema is valid\", () => {\n    pm.response.to.have.jsonSchema(schema);\n});\n\n\n\n"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = Array.from({ length: 16 }, () =>\r\n    \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"[\r\n        Math.floor(Math.random() * 62)\r\n    ]\r\n).join(\"\");\r\n\r\npm.environment.set(\"randomId\", id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "key",
+                  "value": "Authorization",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/produtos/{{productId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "produtos",
+                "{{productId}}"
+              ]
+            },
+            "description": "Attempts to delete a product using an empty or invalid authorization token. Expects a 401 Unauthorized response with an appropriate error message."
+          },
+          "response": []
+        }
+      ],
+      "description": "Contains all test scenarios for the products endpoint (`/produtos`). Covers product creation, retrieval, update, and deletion, including edge cases such as duplicate names, nonexistent IDs, empty fields, and invalid authorization tokens.",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Validate that the required environment variable is set before running any request\r\nconst baseUrl = pm.environment.get(\"url\");\r\n\r\nif (!baseUrl) {\r\n    throw new Error(\"Environment variable 'url' is not defined. Please set it in the active environment before running this collection.\");\r\n}\r\n\r\n// Defines the schemas and saves them as collection variables:\r\n// User Created\r\nconst createUserSchema = {\r\n    type: \"object\",\r\n    required: [\"message\", \"_id\"],\r\n    properties: {\r\n        message:  { type: \"string\" },\r\n        _id:   { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"createUserSchema\", JSON.stringify(createUserSchema));\r\n\r\n// Login With Valid Credential\r\nconst loginSchema = {\r\n    type: \"object\",\r\n    required: [\"message\", \"authorization\"],\r\n    properties: {\r\n        message:  { type: \"string\" },\r\n        _id:   { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"loginSchema\", JSON.stringify(loginSchema));\r\n\r\n// Login With Invalid Credential\r\nconst loginInvalidSchema = {\r\n    type: \"object\",\r\n    required: [\"message\"],\r\n    properties: {\r\n        message:  { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"loginInvalidSchema\", JSON.stringify(loginInvalidSchema));\r\n\r\n// Product Created\r\nconst createProductSchema = {\r\n    type: \"object\",\r\n    required: [\"message\", \"_id\"],\r\n    properties: {\r\n        message:  { type: \"string\" },\r\n        _id:   { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"createProductSchema\", JSON.stringify(createProductSchema));\r\n\r\n// Returns only 'Message' field\r\nconst onlyMessageSchema = {\r\n    type: \"object\",\r\n    required: [\"message\"],\r\n    properties: {\r\n        message:  { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"onlyMessageSchema\", JSON.stringify(onlyMessageSchema));\r\n\r\n// Product With Empty Fields\r\nconst productEmptyFieldsSchema = {\r\n    type: \"object\",\r\n    required: [\"nome\", \"preco\", \"descricao\", \"quantidade\"],\r\n    properties: {\r\n        nome:  { type: \"string\" },\r\n        preco:  { type: \"string\" },\r\n        descricao:  { type: \"string\" },\r\n        quantidade:  { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"productEmptyFieldsSchema\", JSON.stringify(productEmptyFieldsSchema));\r\n\r\n// Products List Schema\r\nconst productsListSchema = {\r\n    type: \"object\",\r\n    required: [\"quantidade\", \"produtos\"],\r\n    properties: {\r\n        quantidade: { type: \"number\" },\r\n        produtos: {\r\n            type: \"array\",\r\n            items: {\r\n                type: \"object\",\r\n                required: [\"nome\", \"preco\", \"descricao\", \"quantidade\", \"_id\"],\r\n                properties: {\r\n                    nome: { type: \"string\" },\r\n                    preco: { type: \"number\" },\r\n                    descricao: { type: \"string\" },\r\n                    quantidade: { type: \"number\" },\r\n                    imagem: { type: \"string\" },\r\n                    _id: { type: \"string\" }\r\n                }\r\n            }\r\n        }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"productsListSchema\", JSON.stringify(productsListSchema));\r\n\r\n// Products List By Id Schema\r\nconst productByIdListSchema = {\r\n    type: \"object\",\r\n    required: [\"nome\", \"preco\", \"descricao\", \"quantidade\", \"_id\"],\r\n    properties: {\r\n        nome: { type: \"string\" },\r\n        preco: { type: \"number\" },\r\n        descricao: { type: \"string\" },\r\n        quantidade: { type: \"number\" },\r\n        imagem: { type: \"string\" },\r\n        _id: { type: \"string\" }\r\n    }\r\n};\r\n\r\npm.collectionVariables.set(\"productByIdListSchema\", JSON.stringify(productByIdListSchema));"
+            ]
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -753,6 +1719,22 @@
     },
     {
       "key": "usersListByIdSchema",
+      "value": ""
+    },
+    {
+      "key": "createProductSchema",
+      "value": ""
+    },
+    {
+      "key": "productEmptyFieldsSchema",
+      "value": ""
+    },
+    {
+      "key": "productsListSchema",
+      "value": ""
+    },
+    {
+      "key": "productByIdListSchema",
       "value": ""
     }
   ]
