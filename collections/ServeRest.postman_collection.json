@@ -30,7 +30,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}} - {{$timestamp}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -205,7 +205,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}} - {{$timestamp}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -246,7 +246,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+              "raw": "{\r\n  \"nome\": \"{{$randomFirstName}} - {{$timestamp}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -458,7 +458,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"false\"\r\n}",
+              "raw": "{\r\n  \"nome\": \"{{$randomFirstName}} - {{$timestamp}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"false\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -745,7 +745,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
+                  "raw": "{\r\n  \"nome\": \"{{$randomFirstName}} - {{$timestamp}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"administrador\": \"true\"\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -836,7 +836,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+                  "raw": "{\r\n  \"nome\": \"{{$randomProduct}} - {{$timestamp}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -892,7 +892,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "raw": "{\r\n  \"nome\": \"{{$randomProduct}} - {{$timestamp}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1223,7 +1223,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"nome\": \"{{$randomProduct}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
+              "raw": "{\r\n  \"nome\": \"{{$randomProduct}} - {{$timestamp}}\",\r\n  \"preco\": {{$randomInt}},\r\n  \"descricao\": \"{{$randomProductAdjective}}\",\r\n  \"quantidade\": {{$randomInt}}\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
